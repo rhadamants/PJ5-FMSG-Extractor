@@ -52,7 +52,7 @@ namespace PJ5_FMSG_Extractor
             result.Reverse();
             //
             int emptyLine = 0;
-            foreach (var entry in result)
+            foreach (string entry in result)
             {
                 if (entry.Length <= 0) emptyLine++;
                 else break;
@@ -60,11 +60,33 @@ namespace PJ5_FMSG_Extractor
             result.RemoveRange(0, emptyLine);
             result.Reverse();
             
-            if (result.Count > 0) File.WriteAllLines(output, result);
+            if (result.Any())
+            {
+                File.WriteAllLines(output, result);
+            }
+
             Console.WriteLine($"Extracted: {Path.GetFileName(output)}");
         }
         public static void Import(string original, string input, string output)
         {
+            if (string.IsNullOrEmpty(original))
+            {
+                throw new ArgumentException($"'{nameof(original)}' não pode ser nulo nem vazio.", nameof(original));
+            }
+
+            if (string.IsNullOrEmpty(input))
+            {
+                //throw new ArgumentException($"'{nameof(input)}' não pode ser nulo nem vazio.", nameof(input));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(output))
+            {
+                throw new ArgumentException($"'{nameof(output)}' não pode ser nulo nem vazio.", nameof(output));
+            }
+
+            if (Path.GetFileNameWithoutExtension(input) == "NAR_M11A") return; //Fck blank file.
+
             MemoryStream result = new MemoryStream();
             string[] text = File.ReadAllLines(input);
             using (BinaryWriter writer = new BinaryWriter(result))
