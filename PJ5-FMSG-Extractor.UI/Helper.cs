@@ -1,10 +1,5 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace PJ5_FMSG_Extractor.UI
@@ -45,12 +40,14 @@ namespace PJ5_FMSG_Extractor.UI
         public static string GetTextFile(FileInfo path, bool check = false)
         {
             string fileName = Path.ChangeExtension(path.Name, ".txt");
+            string extractedPath = Path.Combine(path.DirectoryName, "extracted");
 
             try
             {
-                string file = $"{path.DirectoryName}\\extracted\\{fileName}";
-                if (check) return File.Exists(file) ? file : throw new FileNotFoundException();
-                return file;
+                string file = Path.Combine(extractedPath, fileName);
+                if (!Directory.Exists(extractedPath)) _ = Directory.CreateDirectory(extractedPath);
+
+                return check ? File.Exists(file) ? file : throw new FileNotFoundException() : file;
             }
             catch (FileNotFoundException)
             {
@@ -60,10 +57,10 @@ namespace PJ5_FMSG_Extractor.UI
         }
         public static string GetImportedFile(FileInfo file)
         {
-            string importedPath = $"{file.DirectoryName}\\imported";
+            string importedPath = Path.Combine(file.DirectoryName, "imported"); ;
             if (!Directory.Exists(importedPath)) _ = Directory.CreateDirectory(importedPath);
 
-            return $"{file.DirectoryName}\\imported\\{file.Name}";
+            return Path.Combine(importedPath, file.Name);
         }
     }
 }
