@@ -6,9 +6,9 @@ namespace PJ5_FMSG_Extractor.UI
 {
     static class Helper
     {
-        public static string FolderDialog()
+        public static string FolderDialog(string title)
         {
-            using (var dialog = new CommonOpenFileDialog { IsFolderPicker = true })
+            using (var dialog = new CommonOpenFileDialog { IsFolderPicker = true, Title = title })
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
@@ -47,7 +47,7 @@ namespace PJ5_FMSG_Extractor.UI
                 string file = Path.Combine(extractedPath, fileName);
                 if (!Directory.Exists(extractedPath)) _ = Directory.CreateDirectory(extractedPath);
 
-                return check ? File.Exists(file) ? file : throw new FileNotFoundException() : file;
+                return check ? File.Exists(file) ? file : null : file;
             }
             catch (FileNotFoundException)
             {
